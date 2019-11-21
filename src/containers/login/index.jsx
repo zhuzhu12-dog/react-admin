@@ -56,24 +56,24 @@ class Login extends Component {
                     <h3>用户登录</h3>
                        <Item>
                            {getFieldDecorator("username", {
-                                   rules:[
-                                       { required: true, 
-                                        message: 'Please input your username!'
-                                    },
-                                    {
-                                        min: 4,
-                                        message: "至少大于四位"
-                                    },
-                                    {
-                                        max: 10,
-                                        message: "不少于10十位"
-                                    },
-                                    {
-                                        pattern: /\w/,
-                                        message:"只能包含英文,数字和字母"
-                                    },
-                                   ]
-                               }
+                                rules:[
+                                 { required: true, 
+                                    message: 'Please input your username!'
+                                 },
+                                 {
+                                     min: 4,
+                                     message: "至少大于四位"
+                                 },
+                                 {
+                                     max: 10,
+                                     message: "不少于10十位"
+                                 },
+                                 {
+                                     pattern: /\w/,
+                                     message:"只能包含英文,数字和字母"
+                                 },
+                             ]
+                            }
                            )(
                            <Input
                            prefix={

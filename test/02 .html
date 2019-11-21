@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn1">按钮1</button>
+    <button id="btn2">按钮2</button>
+    <button id="btn3">按钮3</button>
+    <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+    <script>
+        const btn1 = document.getElementById('btn1')
+        const btn2 = document.getElementById('btn2')
+        const btn3 = document.getElementById('btn3')
+
+        let token = '';
+        const axiosInstance = axios.create({
+            baseURL: 'http://localhost:5000/api',
+            timeout: 10000,
+            headers: {
+
+            }
+        });
+      axiosInstance.interceptors.request.use(
+          (config) => {
+              if(config.method === 'post') {
+                  config.headers['content-type'] = 'application/x-www-form-urlencoded';
+                  config.data = Object.keys(config.data).reduce((prev, key)=>{
+                      const value = config.data[key];
+                      return prev + `&${key}=${value}`;
+                  }, '').substring(1);
+              } 
+              if(token) {
+                  config.headers.authorization = 'Bearer ' + token;
+              }
+              return config;
+          },
+      )
+      btn1.onclick = function () {
+          axiosInstance({
+              method: 'POST',
+              url: '/login',
+              data: {
+                  username: 'admin',
+                  password: 'admin'
+              },
+          })
+          .then((response)=>{
+              if(response.data.status === 0) {
+                  console.log(response.data.data);
+                  token = response.data.data.token;
+              } else {
+                  alert(response.data.masg);
+              }
+          })
+          .catch((error)=>{
+              console.log(error);
+              alert('网络出错')
+          })
+      }
+      btn2.onclick = function() {
+          axiosInstance({
+              method: 'GET',
+              url: '/category/get',
+          })
+          .then((response)=>{
+              if(response.data.status === 0) {
+                  console.log(response.data.data);
+              } else{
+                  alert(response.data.msg);
+              }
+          })
+          .catch((error)=>{
+              console.log(error);
+              alert('网络出错');
+          })
+      }
+      btn3.onclcik = function () {
+          axiosInstance({
+              method: 'POST',
+              url: '/category/add',
+              data: {
+                  categoryName: '鼠标'
+              },
+              headers: {
+
+              }
+          })
+          .then((response)=>{
+              if(response.data.status === 0) {
+                  console.log(response.data.data);
+              } else {
+                  alert (response.data.msg);
+              }
+          })
+          .catch((error)=>{
+              console.log(error);
+              alert('网络出错');
+          })
+      }
+    </script>
+</body>
+</html>
