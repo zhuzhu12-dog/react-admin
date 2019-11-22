@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, Icon, message } from "antd";
-import axios from "axios";
-import logo from "./logo.png";
+import { Form, Input, Button, Icon,  } from "antd";
+import { connect } from "react-redux";
+import { getUserAsync } from "../../redux/action-creators/user";
+import{ setItem } from "../../utils/storage";
+import withCheckLogin from '../with-check-login';
+import logo from "../../assets/logo.png";
 import "./index.less";
 const { Item } = Form;
+@withCheckLogin
+@connect(null, {getUserAsync})
 @Form.create()
 class Login extends Component {
     validator = (rule, value, callback) => {
@@ -23,21 +28,16 @@ class Login extends Component {
     login = e => {
         e.preventDefault();
         const{ form } = this.props;
-        this.props.form.validateFields((err, values) => {
+        form.validateFields((err, values) => {
             if(!err){
-                console.log(values);
-                axios.post('http://localhost:5000/api/login', values)
+                const { username, password } = values;
+                this.props
+                .getUserAsync(username, password)
                 .then(response =>{
-                    if(response.data.status === 0){
-                        this.props.history.push("/");
-                    } else {
-                        message.error(response.data.msg);
-                        form.resetFields(["password"]);
-                    }
+                    setItem("user", response);
+                    this.props.history.push("/")
                 })
                 .catch(err => {
-                    console.log(err);
-                    message.error("出现故障");
                     form.resetFields(["passwords"]);
                 });
             }

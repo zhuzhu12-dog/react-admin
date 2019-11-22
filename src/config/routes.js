@@ -1,17 +1,21 @@
 import Home from '../components/home';
 import Login from '../containers/login';
 import NotMatch from '../components/not-match';
-export default[{
+const authRoutes = [{
     path: '/',
     component: Home,
     exact: true
 },
 {
+    component: NotMatch,
+},
+] 
+const noAuthRoutes = [{
     path: '/login',
     component: Login,
     exact: true
-},
-{
-    component: NotMatch,
-},
-]
+}]
+export {
+    authRoutes,
+    noAuthRoutes
+}
